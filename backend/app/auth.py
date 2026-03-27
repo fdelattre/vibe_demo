@@ -26,7 +26,7 @@ def hash_password(password: str) -> str:
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
+    expire = datetime.now(datetime.UTC) + (expires_delta or timedelta(minutes=15))
     to_encode["exp"] = expire
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -44,4 +44,4 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenData:
             raise credentials_exception
         return TokenData(username=username)
     except JWTError:
-        raise credentials_exception
+        raise credentials_exception from None
