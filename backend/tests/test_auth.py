@@ -33,7 +33,7 @@ def test_me_authenticated(client: TestClient):
     token = get_token(client)
     response = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
-    assert response.json() == {"username": "admin"}
+    assert response.json() == {"username": "admin", "first_name": None, "last_name": None}
 
 
 def test_me_unauthenticated(client: TestClient):
