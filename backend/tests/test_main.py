@@ -13,9 +13,9 @@ def test_root_requires_auth(client: TestClient):
 
 
 def test_root_authenticated(client: TestClient):
-    token = client.post(
-        "/auth/login", json={"username": "admin", "password": "admin123"}
-    ).json()["access_token"]
+    token = client.post("/auth/login", json={"username": "admin", "password": "admin123"}).json()[
+        "access_token"
+    ]
     response = client.get("/", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     assert response.json() == {"message": "Hello admin"}
