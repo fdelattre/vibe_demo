@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr:*)",
+      "Bash(ruff --version)",
+      "Bash(pip install:*)",
+      "Bash(ruff format:*)",
+      "Bash(cat -A \"c:\\\\Users\\\\François Delattre\\\\Documents\\\\Personnel\\\\R&D\\\\vibe_demo\\\\backend\\\\tests\\\\test_main.py\")"
+    ]
+  }
+}
