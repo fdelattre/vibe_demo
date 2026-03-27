@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 from ..auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -8,23 +9,24 @@ from ..auth import (
     get_current_user,
     verify_password,
 )
+from ..database import get_db
 from ..schemas import Token, TokenData, UserLogin, UserOut
-from ..users import get_hashed_password
+from ..users import get_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/login", response_model=Token)
-def login(credentials: UserLogin):
-    hashed = get_hashed_password(credentials.username)
-    if not hashed or not verify_password(credentials.password, hashed):
+def login(credentials: UserLogin, db: Session = Depends(get_db)):
+    user = get_user(db, credentials.username)
+    if not user or not verify_password(credentials.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Identifiants incorrects",
             headers={"WWW-Authenticate": "Bearer"},
         )
     token = create_access_token(
-        {"sub": credentials.username},
+        {"sub": user.username},
         timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
     )
     return Token(access_token=token, token_type="bearer")
