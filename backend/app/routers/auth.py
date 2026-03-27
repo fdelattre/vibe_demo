@@ -33,5 +33,10 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.get("/me", response_model=UserOut)
-def me(current: TokenData = Depends(get_current_user)):
-    return UserOut(username=current.username)
+def me(current: TokenData = Depends(get_current_user), db: Session = Depends(get_db)):
+    user = get_user(db, current.username)
+    return UserOut(
+        username=user.username,
+        first_name=user.first_name,
+        last_name=user.last_name,
+    )
